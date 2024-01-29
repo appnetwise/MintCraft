@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import 'hardhat/console.sol';
 
 contract DigitalCollectible is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     uint256 private _currentTokenId = 0;
@@ -39,6 +40,7 @@ contract DigitalCollectible is ERC721, ERC721Enumerable, ERC721URIStorage, Ownab
     }
 
     function transferNFT(address to, uint256 tokenId) public {
+        console.log("Transfer nft %s %s", owner(), msg.sender);
         address from = msg.sender;
         require(ownerOf(tokenId) == from, "You are not the owner of this token");
         require(to != address(0), "Invalid address");

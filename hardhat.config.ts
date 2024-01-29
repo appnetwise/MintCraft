@@ -4,8 +4,16 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
+const { SOLIDITY_VERSION, NETWORK_URL, PRIVATE_KEY, NETWORK_NAME } =
+  process.env;
+
+if (!NETWORK_URL || !PRIVATE_KEY || !NETWORK_NAME) {
+  throw new Error('Missing required environment variable');
+}
+
 const config: HardhatUserConfig = {
-  solidity: process.env.SOLIDITY_VERSION || '0.8.23',
+  solidity: SOLIDITY_VERSION || '0.8.23',
+  defaultNetwork: 'hardhat',
   networks: {
     hardhat: {
       chainId: 1337,
@@ -13,14 +21,13 @@ const config: HardhatUserConfig = {
     localhost: {
       url: 'http://127.0.0.1:8545',
     },
+    [NETWORK_NAME]: {
+      url: NETWORK_URL,
+      accounts: [PRIVATE_KEY],
+      gasPrice: 50000000000, // 50 gwei
+      gas: 'auto', // Automatically estimate gas
+    },
   },
 };
-
-if (process.env.NETWORK_URL && process.env.PRIVATE_KEY) {
-  config.networks[process.env.NETWORK_NAME] = {
-    url: process.env.NETWORK_URL,
-    accounts: [process.env.PRIVATE_KEY],
-  };
-}
 
 export default config;
